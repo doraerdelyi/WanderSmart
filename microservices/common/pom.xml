@@ -10,7 +10,7 @@
     </parent>
     <artifactId>common</artifactId>
     <name>Common Module</name>
-    <description>Shared event classes, DTOs, and serializers for all microservices</description>
+    <description>Shared event classes, utils for all microservices</description>
     <packaging>jar</packaging>
 
     <properties>
