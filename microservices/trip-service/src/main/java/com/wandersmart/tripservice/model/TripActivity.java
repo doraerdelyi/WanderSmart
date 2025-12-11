@@ -15,11 +15,6 @@ public class TripActivity {
     @Column(nullable = false)
     private UUID tripActivityId;
 
-    @PrePersist
-    private void onCreate() {
-        this.tripActivityId = UUID.randomUUID();
-    }
-
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
@@ -32,44 +27,40 @@ public class TripActivity {
 
     public TripActivity() {}
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public TripActivity(Place place, LocalDateTime visitTime, Trip trip) {
+        this.tripActivityId = UUID.randomUUID();
+        this.place = place;
+        this.visitTime = visitTime;
+        this.trip = trip;
     }
 
     public UUID getTripActivityId() {
         return tripActivityId;
     }
 
-    public void setTripActivityId(UUID tripActivityId) {
-        this.tripActivityId = tripActivityId;
-    }
-
     public Place getPlace() {
         return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
     }
 
     public LocalDateTime getVisitTime() {
         return visitTime;
     }
 
-    public void setVisitTime(LocalDateTime visitTime) {
-        this.visitTime = visitTime;
-    }
-
     public Trip getTrip() {
         return trip;
     }
 
-    public void setTrip(Trip trip) {
-        this.trip = trip;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TripActivity)) return false;
+        TripActivity that = (TripActivity) o;
+        return tripActivityId != null && tripActivityId.equals(that.tripActivityId);
     }
+
+    @Override
+    public int hashCode() {
+        return this.tripActivityId.hashCode();
+    }
+
 }
