@@ -3,6 +3,7 @@ package com.wandersmart.tripservice.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,21 +26,27 @@ public class Trip {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY)
-    private List<TripActivity> tripActivities;
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TripActivity> tripActivities = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "traveller_id", nullable = false)
     private Traveller traveller;
 
+    @PrePersist
+    private void onCreate() {
+        this.tripId = UUID.randomUUID();
+    }
+
     public Trip() {
     }
 
-    public Trip(String name, UUID tripId, LocalDate startDate, LocalDate endDate) {
+    public Trip(String name, LocalDate startDate, LocalDate endDate, Traveller traveller) {
+        this.tripId = UUID.randomUUID();
         this.name = name;
-        this.tripId = tripId;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.traveller = traveller;
     }
 
     public String getName() {
@@ -58,19 +65,17 @@ public class Trip {
         return endDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Trip)) return false;
+        Trip trip = (Trip) o;
+        return tripId != null && tripId.equals(trip.tripId);
     }
 
-    public void setTripId(UUID tripId) {
-        this.tripId = tripId;
+    @Override
+    public int hashCode() {
+        return this.tripId.hashCode();
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
 }
