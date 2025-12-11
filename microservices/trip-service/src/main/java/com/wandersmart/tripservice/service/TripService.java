@@ -1,4 +1,7 @@
 package com.wandersmart.tripservice.service;
+import com.wandersmart.tripservice.dto.*;
+import com.wandersmart.tripservice.model.Trip;
+import com.wandersmart.tripservice.model.TripActivity;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +48,12 @@ public class TripService {
         return this.tripActivityRepository.deleteByTripActivityId(tripActivityId);
     }
 
-    public List<TripDTO> getTrips() {
+    public List<TripResponseDTO> getTrips() {
         List<Trip> trips = this.tripRepository.findAll();
         return trips.stream().map(this::convertTripToTripDTO).collect(Collectors.toList());
     }
 
-    public TripDetailsDTO getTripById(UUID tripId) {
+    public TripDetailsResponseDTO getTripById(UUID tripId) {
         Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(NoSuchElementException::new);
         return convertTripToTripDetailsDTO(trip);
 
@@ -68,25 +71,25 @@ public class TripService {
         trip.setEndDate(tripUpdateDTO.endDate());
     }
 
-    private TripDTO convertTripToTripDTO(Trip trip) {
-        return new TripDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate());
+    private TripResponseDTO convertTripToTripDTO(Trip trip) {
+        return new TripResponseDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate());
     }
-    private TripDetailsDTO convertTripToTripDetailsDTO(Trip trip) {
+    private TripDetailsResponseDTO convertTripToTripDetailsDTO(Trip trip) {
         List<TripActivity> tripActivities = trip.getTripActivities();
-        List<TripActivityDTO> tripActivityDTOS = tripActivities.stream().map(this::convertTripActivityToTripActivityDTO).collect(Collectors.toList());
-        return new TripDetailsDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate(), tripActivityDTOS);
+        List<TripActivityResponseDTO> tripActivityDTOS = tripActivities.stream().map(this::convertTripActivityToTripActivityDTO).collect(Collectors.toList());
+        return new TripDetailsResponseDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate(), tripActivityDTOS);
     }
 
-    private TripActivityDTO convertTripActivityToTripActivityDTO(TripActivity tripActivity) {
+    private TripActivityResponseDTO convertTripActivityToTripActivityDTO(TripActivity tripActivity) {
         Place place = tripActivity.getPlace();
         Location location = new Location(place.getLatitude(), place.getLongitude());
         PlaceDTO placeDTO = new PlaceDTO(place.getPlaceId(), place.getName(), place.getRating(), place.getPriceLevel(), place.getOpeningHours(),
                 place.getPhotos().stream().map(Photo::getPhotoId).collect(Collectors.toList()),
                 location);
-        return new TripActivityDTO(placeDTO, tripActivity.getVisitTime());
+        return new TripActivityResponseDTO(placeDTO, tripActivity.getVisitTime());
     }
 
-    public List<TripDTO> getTripsByTraveller() {
+    public List<TripResponseDTO> getTripsByTraveller() {
         Traveller traveller = this.travellerService.getAuthenticatedUser();
         List<Trip> trips = this.tripRepository.findByTraveller(traveller);
         return trips.stream().map(this::convertTripToTripDTO).collect(Collectors.toList());
