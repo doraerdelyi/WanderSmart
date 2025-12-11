@@ -1,4 +1,6 @@
 package com.wandersmart.tripservice.dto;
 
-public class TripActivityResponseDTO {
+import java.time.LocalDateTime;
+
+public record TripActivityResponseDTO(PlaceDTO placeDTO, LocalDateTime visitTime) {
 }
