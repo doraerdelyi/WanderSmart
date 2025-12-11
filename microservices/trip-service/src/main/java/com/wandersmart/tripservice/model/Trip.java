@@ -19,13 +19,18 @@ public class Trip {
     @Column(nullable = false, unique = true)
     private UUID tripId;
 
-
     @Column(nullable = false)
     private LocalDate startDate;
 
     @Column(nullable = false)
     private LocalDate endDate;
 
+    @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY)
+    private List<TripActivity> tripActivities;
+
+    @ManyToOne
+    @JoinColumn(name = "traveller_id", nullable = false)
+    private Traveller traveller;
 
     public Trip() {
     }
@@ -68,5 +73,4 @@ public class Trip {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
-
 }
