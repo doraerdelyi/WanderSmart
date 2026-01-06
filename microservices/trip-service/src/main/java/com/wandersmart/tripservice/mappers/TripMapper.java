@@ -1,23 +1,14 @@
 package com.wandersmart.tripservice.mappers;
 
-import com.wandersmart.tripservice.dto.TripActivityResponseDTO;
 import com.wandersmart.tripservice.dto.TripDetailsResponseDTO;
 import com.wandersmart.tripservice.dto.TripResponseDTO;
 import com.wandersmart.tripservice.model.Trip;
+import org.mapstruct.Mapper;
 
+@Mapper(componentModel = "spring", uses = TripActivityMapper.class)
+public interface TripMapper {
 
-import java.util.List;
-import java.util.stream.Collectors;
+    TripResponseDTO toResponseDTO(Trip trip);
 
-public class TripMapper {
-
-    public static TripResponseDTO toDTO(Trip trip) {
-        return new TripResponseDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate());
-    }
-    public static TripDetailsResponseDTO toDTOWithDetails(Trip trip) {
-        //List<TripActivity> tripActivities = trip.getTripActivities();
-        List<TripActivityResponseDTO> tripActivityDTOS = tripActivities.stream().map(TripActivityMapper::toDTO).collect(Collectors.toList());
-        return new TripDetailsResponseDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate(), tripActivityDTOS);
-    }
-
+    TripDetailsResponseDTO toDetailsResponseDTO(Trip trip, PlaceResponseDTO placeResponseDTO);
 }

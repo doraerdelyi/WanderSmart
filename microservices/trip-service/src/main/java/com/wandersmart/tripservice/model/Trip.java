@@ -33,6 +33,10 @@ public class Trip {
     @JoinColumn(name = "traveller_id", nullable = false)
     private Traveller traveller;
 
+    public List<TripActivity> getTripActivities() {
+        return tripActivities;
+    }
+
     @PrePersist
     private void onCreate() {
         this.tripId = UUID.randomUUID();

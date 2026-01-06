@@ -1,7 +1,6 @@
 package com.wandersmart.tripservice.service;
 
 import com.wandersmart.tripservice.dto.*;
-import com.wandersmart.tripservice.mappers.TripMapper;
 import com.wandersmart.tripservice.model.Trip;
 import com.wandersmart.tripservice.model.TripActivity;
 import jakarta.transaction.Transactional;
