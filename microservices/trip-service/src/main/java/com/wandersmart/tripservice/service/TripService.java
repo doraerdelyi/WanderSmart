@@ -50,11 +50,11 @@ public class TripService {
     }
 
     @Transactional
-    public void updateTripById(UUID tripId, TripUpdateDTO tripUpdateDTO) {
-        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new NoSuchElementException("Trip not found"));
-        trip.setName(tripUpdateDTO.name());
-        trip.setStartDate(tripUpdateDTO.startDate());
-        trip.setEndDate(tripUpdateDTO.endDate());
+    public void updateTripById(UUID tripId, TripRequestDTO tripRequestDTO) {
+        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
+        trip.setName(tripRequestDTO.name());
+        trip.setStartDate(tripRequestDTO.startDate());
+        trip.setEndDate(tripRequestDTO.endDate());
     }
 
     public List<TripResponseDTO> getTripsByTraveller(UUID travellerId) {
@@ -64,13 +64,12 @@ public class TripService {
 
 
     @Transactional
-    public UUID addTripActivity(UUID tripId, TripActivityRequestDTO tripActivityCreateDTO) {
-        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new NoSuchElementException("Trip not found"));
-        //Place place = this.placeRepository.findByPlaceId(tripActivityCreateDTO.placeId()).orElseThrow(() -> new NoSuchElementException("Place not found"));
-        TripActivity newTripActivity = new TripActivity(place,
-                                                        tripActivityCreateDTO.visitTime(),
-                                                        trip);
-        return this.tripActivityRepository.save(newTripActivity).getTripActivityId();
+    public UUID addTripActivity(UUID tripId, TripActivityRequestDTO tripActivityRequestDTO) {
+        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
+        TripActivity activity = new TripActivity(tripActivityRequestDTO.placeId(),
+                                                tripActivityRequestDTO.visitTime(),
+                                                    trip);
+        return this.tripActivityRepository.save(activity).getTripActivityId();
     }
 
 
