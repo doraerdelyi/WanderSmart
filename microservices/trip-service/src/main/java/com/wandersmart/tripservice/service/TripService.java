@@ -79,9 +79,8 @@ public class TripService {
         trip.setEndDate(tripUpdateDTO.endDate());
     }
 
-    public List<TripResponseDTO> getTripsByTraveller() {
-        //Traveller traveller = new Traveller();
-        List<Trip> trips = this.tripRepository.findByTraveller(traveller);
-        return trips.stream().map(TripMapper::tripToTripResponseDTO).collect(Collectors.toList());
+    public List<TripResponseDTO> getTripsByTraveller(UUID travellerId) {
+        List<Trip> trips = this.tripRepository.findAllByTravellerId(travellerId);
+        return trips.stream().map(tripMapper::toResponseDTO).collect(Collectors.toList());
     }
 }
