@@ -52,7 +52,7 @@ public class TripService {
     }
 
 
-    public int deleteTripActivityById(UUID tripActivityId) {
+    public long deleteTripActivityById(UUID tripActivityId) {
         return this.tripActivityRepository.deleteByTripActivityId(tripActivityId);
     }
 
@@ -67,7 +67,7 @@ public class TripService {
 
     }
 
-    public int deleteTripById(UUID tripId) {
+    public long deleteTripById(UUID tripId) {
         return this.tripRepository.deleteByTripId(tripId);
     }
 
