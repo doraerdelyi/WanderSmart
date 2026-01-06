@@ -7,18 +7,17 @@ import com.wandersmart.tripservice.model.TripActivity;
 
 public class TripActivityMapper {
 
-    public static TripActivityResponseDTO toTripActivityResponseDTO(TripActivity tripActivity) {
-        PlaceDTO placeDto = PlaceMapper.placeToPlaceDTO(tripActivity.getPlace());
-        return new TripActivityResponseDTO(placeDto, tripActivity.getVisitTime());
+    public static TripActivityResponseDTO toDTO(TripActivity tripActivity) {
+        PlaceResponseDTO placeResponseDTO = PlaceMapper.toDTO(tripActivity.getPlace());
+        return new TripActivityResponseDTO(placeResponseDTO, tripActivity.getVisitTime());
     }
 
 
-    public static TripActivity tripActivityCreateDTOToTripActivity (TripActivityRequestDTO dto, Trip trip, Place place) {
-        TripActivity activity = new TripActivity(
+    public static TripActivity toTripActivity (TripActivityRequestDTO tripActivityRequestDTO, Trip trip, Place place) {
+        return new TripActivity(
                 place,
-                dto.visitTime(),
+                tripActivityRequestDTO.visitTime(),
                 trip
         );
-        return activity;
     }
 }
