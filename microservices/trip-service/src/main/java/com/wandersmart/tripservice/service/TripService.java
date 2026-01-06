@@ -58,7 +58,7 @@ public class TripService {
 
     public List<TripResponseDTO> getTrips() {
         List<Trip> trips = this.tripRepository.findAll();
-        return trips.stream().map(TripMapper::tripToTripResponseDTO).collect(Collectors.toList());
+        return trips.stream().map(tripMapper::toResponseDTO).collect(Collectors.toList());
     }
 
     public TripDetailsResponseDTO getTripById(UUID tripId) {
