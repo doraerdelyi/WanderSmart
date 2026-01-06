@@ -15,9 +15,8 @@ public class TripActivity {
     @Column(nullable = false)
     private UUID tripActivityId;
 
-    @ManyToOne
-    @JoinColumn(name = "place_id", nullable = false)
-    private Place place;
+    @Column(nullable = false)
+    private UUID placeId;
 
     private LocalDateTime visitTime;
 
@@ -27,9 +26,9 @@ public class TripActivity {
 
     public TripActivity() {}
 
-    public TripActivity(Place place, LocalDateTime visitTime, Trip trip) {
+    public TripActivity(UUID placeId, LocalDateTime visitTime, Trip trip) {
         this.tripActivityId = UUID.randomUUID();
-        this.place = place;
+        this.placeId = placeId;
         this.visitTime = visitTime;
         this.trip = trip;
     }
@@ -38,16 +37,31 @@ public class TripActivity {
         return tripActivityId;
     }
 
-    public Place getPlace() {
-        return place;
+    public UUID getPlaceId() {
+        return placeId;
     }
-
     public LocalDateTime getVisitTime() {
         return visitTime;
     }
 
     public Trip getTrip() {
         return trip;
+    }
+
+    public void setTripActivityId(UUID tripActivityId) {
+        this.tripActivityId = tripActivityId;
+    }
+
+    public void setPlaceId(UUID placeId) {
+        this.placeId = placeId;
+    }
+
+    public void setVisitTime(LocalDateTime visitTime) {
+        this.visitTime = visitTime;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 
     @Override
