@@ -61,6 +61,18 @@ public class Trip {
         return startDate;
     }
 
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public LocalDate getEndDate() {
         return endDate;
     }
