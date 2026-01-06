@@ -21,8 +21,8 @@ public class TripService {
         this.tripRepository = tripRepository;
     }
 
-    public UUID createTrip(TripCreateDTO tripCreateDTO) {
-        Traveller traveller = travellerService.getAuthenticatedUser();
+    public UUID createTrip(TripRequestDTO tripCreateDTO) {
+        //Traveller traveller = travellerService.getAuthenticatedUser();
         Trip newTrip = new Trip(tripCreateDTO.name(),
                                 tripCreateDTO.startDate(),
                                 tripCreateDTO.endDate(),
@@ -32,9 +32,9 @@ public class TripService {
 
 
     @Transactional
-    public UUID addTripActivity(UUID tripId, TripActivityCreateDTO tripActivityCreateDTO) {
+    public UUID addTripActivity(UUID tripId, TripActivityRequestDTO tripActivityCreateDTO) {
         Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new NoSuchElementException("Trip not found"));
-        Place place = this.placeRepository.findByPlaceId(tripActivityCreateDTO.placeId()).orElseThrow(() -> new NoSuchElementException("Place not found"));
+        //Place place = this.placeRepository.findByPlaceId(tripActivityCreateDTO.placeId()).orElseThrow(() -> new NoSuchElementException("Place not found"));
         TripActivity newTripActivity = new TripActivity(place,
                                                         tripActivityCreateDTO.visitTime(),
                                                         trip);
@@ -48,12 +48,12 @@ public class TripService {
 
     public List<TripResponseDTO> getTrips() {
         List<Trip> trips = this.tripRepository.findAll();
-        return trips.stream().map(this::convertTripToTripDTO).collect(Collectors.toList());
+        return trips.stream().map(TripMapper::tripToTripResponseDTO).collect(Collectors.toList());
     }
 
     public TripDetailsResponseDTO getTripById(UUID tripId) {
         Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(NoSuchElementException::new);
-        return convertTripToTripDetailsDTO(trip);
+        return TripMapper.tripToTripDetailsResponseDTO(trip);
 
     }
 
@@ -70,8 +70,8 @@ public class TripService {
     }
 
     public List<TripResponseDTO> getTripsByTraveller() {
-        Traveller traveller = this.travellerService.getAuthenticatedUser();
+        //Traveller traveller = new Traveller();
         List<Trip> trips = this.tripRepository.findByTraveller(traveller);
-        return trips.stream().map(this::convertTripToTripDTO).collect(Collectors.toList());
+        return trips.stream().map(TripMapper::tripToTripResponseDTO).collect(Collectors.toList());
     }
 }

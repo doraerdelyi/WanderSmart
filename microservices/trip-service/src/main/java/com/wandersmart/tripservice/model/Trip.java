@@ -33,6 +33,10 @@ public class Trip {
     @JoinColumn(name = "traveller_id", nullable = false)
     private Traveller traveller;
 
+    public List<TripActivity> getTripActivities() {
+        return tripActivities;
+    }
+
     @PrePersist
     private void onCreate() {
         this.tripId = UUID.randomUUID();
@@ -59,6 +63,18 @@ public class Trip {
 
     public LocalDate getStartDate() {
         return startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDate getEndDate() {
