@@ -29,13 +29,8 @@ public class Trip {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TripActivity> tripActivities = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "traveller_id", nullable = false)
-    private Traveller traveller;
-
-    public List<TripActivity> getTripActivities() {
-        return tripActivities;
-    }
+    @Column(nullable = false)
+    private UUID travellerId;
 
     @PrePersist
     private void onCreate() {
@@ -45,12 +40,12 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(String name, LocalDate startDate, LocalDate endDate, Traveller traveller) {
+    public Trip(String name, LocalDate startDate, LocalDate endDate, UUID travellerId) {
         this.tripId = UUID.randomUUID();
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.traveller = traveller;
+        this.travellerId = travellerId;
     }
 
     public String getName() {
@@ -61,8 +56,20 @@ public class Trip {
         return tripId;
     }
 
+    public UUID getTravellerId() {
+        return travellerId;
+    }
+
+    public List<TripActivity> getTripActivities() {
+        return tripActivities;
+    }
+
     public LocalDate getStartDate() {
         return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
@@ -73,12 +80,20 @@ public class Trip {
         this.startDate = startDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTripId(UUID tripId) {
+        this.tripId = tripId;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
+    public void setTripActivities(List<TripActivity> tripActivities) {
+        this.tripActivities = tripActivities;
+    }
+
+    public void setTravellerId(UUID travellerId) {
+        this.travellerId = travellerId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
