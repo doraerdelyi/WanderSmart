@@ -50,11 +50,11 @@ public class TripService {
     }
 
     @Transactional
-    public void updateTripById(UUID tripId, TripUpdateDTO tripUpdateDTO) {
-        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new NoSuchElementException("Trip not found"));
-        trip.setName(tripUpdateDTO.name());
-        trip.setStartDate(tripUpdateDTO.startDate());
-        trip.setEndDate(tripUpdateDTO.endDate());
+    public void updateTripById(UUID tripId, TripRequestDTO tripRequestDTO) {
+        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
+        trip.setName(tripRequestDTO.name());
+        trip.setStartDate(tripRequestDTO.startDate());
+        trip.setEndDate(tripRequestDTO.endDate());
     }
 
     public List<TripResponseDTO> getTripsByTraveller(UUID travellerId) {
