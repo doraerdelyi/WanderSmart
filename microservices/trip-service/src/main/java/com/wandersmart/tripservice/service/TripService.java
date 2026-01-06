@@ -22,7 +22,7 @@ public class TripService {
         this.tripRepository = tripRepository;
     }
 
-    public UUID createTrip(TripCreateDTO tripCreateDTO) {
+    public UUID createTrip(TripRequestDTO tripCreateDTO) {
         //Traveller traveller = travellerService.getAuthenticatedUser();
         Trip newTrip = new Trip(tripCreateDTO.name(),
                                 tripCreateDTO.startDate(),
