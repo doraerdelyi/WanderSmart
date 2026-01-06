@@ -32,12 +32,11 @@ public class TripService {
         this.tripActivityMapper = tripActivityMapper;
     }
 
-    public UUID createTrip(TripRequestDTO tripCreateDTO) {
-        //Traveller traveller = travellerService.getAuthenticatedUser();
+    public UUID createTrip(TripRequestDTO tripCreateDTO, UUID travellerId) {
         Trip newTrip = new Trip(tripCreateDTO.name(),
                                 tripCreateDTO.startDate(),
                                 tripCreateDTO.endDate(),
-                                traveller);
+                                travellerId);
         return this.tripRepository.save(newTrip).getTripId();
     }
 
@@ -53,7 +52,7 @@ public class TripService {
     }
 
 
-    public int deleteTripActivityById(UUID tripActivityId) {
+    public long deleteTripActivityById(UUID tripActivityId) {
         return this.tripActivityRepository.deleteByTripActivityId(tripActivityId);
     }
 
@@ -68,7 +67,7 @@ public class TripService {
 
     }
 
-    public int deleteTripById(UUID tripId) {
+    public long deleteTripById(UUID tripId) {
         return this.tripRepository.deleteByTripId(tripId);
     }
 
@@ -80,9 +79,8 @@ public class TripService {
         trip.setEndDate(tripUpdateDTO.endDate());
     }
 
-    public List<TripResponseDTO> getTripsByTraveller() {
-        //Traveller traveller = new Traveller();
-        List<Trip> trips = this.tripRepository.findByTraveller(traveller);
-        return trips.stream().map(TripMapper::tripToTripResponseDTO).collect(Collectors.toList());
+    public List<TripResponseDTO> getTripsByTraveller(UUID travellerId) {
+        List<Trip> trips = this.tripRepository.findAllByTravellerId(travellerId);
+        return trips.stream().map(tripMapper::toResponseDTO).collect(Collectors.toList());
     }
 }
