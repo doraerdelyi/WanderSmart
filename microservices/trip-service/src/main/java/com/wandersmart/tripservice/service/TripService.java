@@ -32,12 +32,11 @@ public class TripService {
         this.tripActivityMapper = tripActivityMapper;
     }
 
-    public UUID createTrip(TripRequestDTO tripCreateDTO) {
-        //Traveller traveller = travellerService.getAuthenticatedUser();
+    public UUID createTrip(TripRequestDTO tripCreateDTO, UUID travellerId) {
         Trip newTrip = new Trip(tripCreateDTO.name(),
                                 tripCreateDTO.startDate(),
                                 tripCreateDTO.endDate(),
-                                traveller);
+                                travellerId);
         return this.tripRepository.save(newTrip).getTripId();
     }
 
