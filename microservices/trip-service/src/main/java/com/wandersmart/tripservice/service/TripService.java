@@ -1,8 +1,12 @@
 package com.wandersmart.tripservice.service;
 
 import com.wandersmart.tripservice.dto.*;
+import com.wandersmart.tripservice.mappers.TripActivityMapper;
+import com.wandersmart.tripservice.mappers.TripMapper;
 import com.wandersmart.tripservice.model.Trip;
 import com.wandersmart.tripservice.model.TripActivity;
+import com.wandersmart.tripservice.repository.TripActivityRepository;
+import com.wandersmart.tripservice.repository.TripRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +19,17 @@ import java.util.stream.Collectors;
 public class TripService {
 
     private final TripRepository tripRepository;
+    private final TripActivityRepository tripActivityRepository;
+    private final TripMapper tripMapper;
+    private final TripActivityMapper tripActivityMapper;
 
 
-    public TripService(TripRepository tripRepository) {
+
+    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper) {
         this.tripRepository = tripRepository;
+        this.tripActivityRepository = tripActivityRepository;
+        this.tripMapper = tripMapper;
+        this.tripActivityMapper = tripActivityMapper;
     }
 
     public UUID createTrip(TripRequestDTO tripCreateDTO) {
