@@ -46,7 +46,7 @@ public class TripService {
 
     @Transactional
     public void deleteTripById(UUID tripId) {
-        this.tripActivityRepository.deleteByTripId(tripId);
+        this.tripActivityRepository.deleteAllByTripId(tripId);
         this.tripRepository.deleteByTripId(tripId);
     }
 
