@@ -44,8 +44,10 @@ public class TripService {
         return tripMapper.toDetailsResponseDTO(trip);
     }
 
-    public long deleteTripById(UUID tripId) {
-        return this.tripRepository.deleteByTripId(tripId);
+    @Transactional
+    public void deleteTripById(UUID tripId) {
+        this.tripActivityRepository.deleteByTripId(tripId);
+        this.tripRepository.deleteByTripId(tripId);
     }
 
     @Transactional
@@ -73,7 +75,10 @@ public class TripService {
     }
 
 
-    public long deleteTripActivityById(UUID tripActivityId) {
-        return this.tripActivityRepository.deleteByTripActivityId(tripActivityId);
+    public void deleteTripActivityById(UUID tripActivityId) {
+        boolean deleted = this.tripActivityRepository.deleteByTripActivityId(tripActivityId) > 0;
+        if (!deleted) {
+            throw new TripActivityNotFoundException("Trip Activity Not Found");
+        }
     }
 }
