@@ -7,8 +7,8 @@ import com.wandersmart.tripservice.model.Trip;
 import com.wandersmart.tripservice.model.TripActivity;
 import com.wandersmart.tripservice.repository.TripActivityRepository;
 import com.wandersmart.tripservice.repository.TripRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +38,7 @@ public class TripService {
                                 travellerId);
         return this.tripRepository.save(newTrip).getTripId();
     }
-
+    @Transactional(readOnly=true)
     public TripDetailsResponseDTO getTripById(UUID tripId) {
         Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
         return tripMapper.toDetailsResponseDTO(trip);
@@ -56,6 +56,7 @@ public class TripService {
         trip.setEndDate(tripRequestDTO.endDate());
     }
 
+    @Transactional(readOnly=true)
     public List<TripResponseDTO> getTripsByTraveller(UUID travellerId) {
         List<Trip> trips = this.tripRepository.findAllByTravellerId(travellerId);
         return trips.stream().map(tripMapper::toResponseDTO).collect(Collectors.toList());
