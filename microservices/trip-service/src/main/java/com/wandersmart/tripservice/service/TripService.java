@@ -1,6 +1,8 @@
 package com.wandersmart.tripservice.service;
 
 import com.wandersmart.tripservice.dto.*;
+import com.wandersmart.tripservice.exceptions.TripActivityNotFoundException;
+import com.wandersmart.tripservice.exceptions.TripNotFoundException;
 import com.wandersmart.tripservice.mappers.TripActivityMapper;
 import com.wandersmart.tripservice.mappers.TripMapper;
 import com.wandersmart.tripservice.model.Trip;
