@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface TripActivityRepository extends JpaRepository<TripActivity,Long> {
     long deleteByTripActivityId(UUID tripActivityId);
+    void deleteAllByTripId(UUID tripId);
 }
