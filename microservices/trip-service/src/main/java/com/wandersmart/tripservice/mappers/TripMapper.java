@@ -13,7 +13,7 @@ public interface TripMapper {
 
     TripResponseDTO toResponseDTO(Trip trip);
 
-    TripDetailsResponseDTO toDetailsResponseDTO(Trip trip, PlaceResponseDTO placeResponseDTO);
+    TripDetailsResponseDTO toDetailsResponseDTO(Trip trip);
 
     Trip toTrip(TripRequestDTO tripRequestDTO, UUID travellerId);
 }
