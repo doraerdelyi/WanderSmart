@@ -11,7 +11,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class TripService {
     }
 
     public TripDetailsResponseDTO getTripById(UUID tripId) {
-        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(TripNotFoundException::new);
+        Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
         return tripMapper.toDetailsResponseDTO(trip);
     }
 
