@@ -16,7 +16,7 @@ public class TripActivity {
     private UUID tripActivityId;
 
     @Column(nullable = false)
-    private UUID placeId;
+    private String placeId;
 
     private LocalDateTime visitTime;
 
@@ -26,7 +26,7 @@ public class TripActivity {
 
     public TripActivity() {}
 
-    public TripActivity(UUID placeId, LocalDateTime visitTime, Trip trip) {
+    public TripActivity(String placeId, LocalDateTime visitTime, Trip trip) {
         this.tripActivityId = UUID.randomUUID();
         this.placeId = placeId;
         this.visitTime = visitTime;
@@ -37,7 +37,7 @@ public class TripActivity {
         return tripActivityId;
     }
 
-    public UUID getPlaceId() {
+    public String getPlaceId() {
         return placeId;
     }
     public LocalDateTime getVisitTime() {
@@ -52,7 +52,7 @@ public class TripActivity {
         this.tripActivityId = tripActivityId;
     }
 
-    public void setPlaceId(UUID placeId) {
+    public void setPlaceId(String placeId) {
         this.placeId = placeId;
     }
 
