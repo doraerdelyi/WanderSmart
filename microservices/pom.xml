@@ -13,12 +13,14 @@
     <name>Microservices Parent</name>
 
     <modules>
+        <module>grpc-contracts</module>
         <module>common</module>
         <module>trip-service</module>
         <module>auth-service</module>
         <module>traveller-service</module>
         <module>place-service</module>
         <module>recommendation-service</module>
+        <module>grpc-contracts</module>
     </modules>
 
     <properties>
