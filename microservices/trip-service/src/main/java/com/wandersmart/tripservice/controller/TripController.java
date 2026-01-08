@@ -58,6 +58,3 @@ public class TripController {
         tripService.deleteTripActivityById(activityId);
     }
 }
-
-
-}
