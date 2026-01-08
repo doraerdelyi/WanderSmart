@@ -11,6 +11,7 @@
         <module name="auth-service" />
         <module name="common" />
         <module name="place-service" />
+        <module name="grpc-contracts" />
         <module name="recommendation-service" />
       </profile>
       <profile name="Annotation profile for Microservices Parent" enabled="true">
