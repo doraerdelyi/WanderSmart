@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface TripRepository extends JpaRepository<Trip, Long> {
     @EntityGraph(attributePaths = {"tripActivities"})
     Optional<Trip> findByTripId(UUID tripId);
-    long deleteByTripId(UUID tripId);
+    void deleteByTripId(UUID tripId);
     List<Trip> findAllByTravellerId(UUID travellerId);
 }
