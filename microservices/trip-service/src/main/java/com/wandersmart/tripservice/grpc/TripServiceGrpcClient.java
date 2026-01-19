@@ -3,6 +3,7 @@ package com.wandersmart.tripservice.grpc;
 import com.wandersmart.grpc.place.PlaceRequest;
 import com.wandersmart.grpc.place.PlaceResponse;
 import com.wandersmart.grpc.place.PlaceServiceGrpc;
+import com.wandersmart.tripservice.dto.PlaceDTO;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
