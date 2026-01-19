@@ -4,11 +4,11 @@ import com.wandersmart.grpc.place.PlaceRequest;
 import com.wandersmart.grpc.place.PlaceResponse;
 import com.wandersmart.grpc.place.PlaceServiceGrpc;
 import com.wandersmart.tripservice.dto.PlaceDTO;
+import com.wandersmart.tripservice.mappers.PlaceGrpcMapper;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -37,7 +37,7 @@ public class TripServiceGrpcClient {
       return mapper.toDTOList(response.getPlacesList())
               .stream()
               .collect(Collectors.toMap(
-                      com.wandersmart.grpc.place.Place::getPlaceId,
+                      PlaceDTO::placeId,
                       Function.identity()
               ));
 
