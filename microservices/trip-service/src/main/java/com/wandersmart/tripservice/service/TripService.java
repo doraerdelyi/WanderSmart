@@ -1,5 +1,7 @@
 package com.wandersmart.tripservice.service;
 
+import com.wandersmart.common.events.trip.TripCreatedEvent;
+import com.wandersmart.common.events.trip.TripDeletedEvent;
 import com.wandersmart.tripservice.dto.*;
 import com.wandersmart.tripservice.exceptions.TripActivityNotFoundException;
 import com.wandersmart.tripservice.exceptions.TripNotFoundException;
@@ -14,6 +16,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -46,8 +50,8 @@ public class TripService {
                                 tripCreateDTO.endDate(),
                                 travellerId);
         Trip savedTrip = tripRepository.save(newTrip);
-        TripResponseDTO tripResponseDTO = tripMapper.toResponseDTO(savedTrip);
-        kafkaTemplate.send("trip-created", tripResponseDTO);
+        TripCreatedEvent tripCreated = new TripCreatedEvent(savedTrip.getTripId(), travellerId, savedTrip.getName(), LocalDateTime.now());
+        kafkaTemplate.send("trip-created", tripCreated);
         return savedTrip.getTripId();
     }
 
@@ -65,7 +69,7 @@ public class TripService {
         Trip trip = tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
         this.tripActivityRepository.deleteAllByTrip_TripId(tripId);
         this.tripRepository.deleteByTripId(tripId);
-        TripResponseDTO deletedTrip = tripMapper.toResponseDTO(trip);
+        TripDeletedEvent deletedTrip = new TripDeletedEvent(tripId, LocalDate.now())
         kafkaTemplate.send("trip-deleted", deletedTrip);
     }
 
