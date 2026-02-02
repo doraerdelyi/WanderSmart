@@ -62,8 +62,11 @@ public class TripService {
 
     @Transactional
     public void deleteTripById(UUID tripId) {
+        Trip trip = tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
         this.tripActivityRepository.deleteAllByTrip_TripId(tripId);
         this.tripRepository.deleteByTripId(tripId);
+        TripResponseDTO deletedTrip = tripMapper.toResponseDTO(trip);
+        kafkaTemplate.send("trip-deleted", deletedTrip);
     }
 
     @Transactional
