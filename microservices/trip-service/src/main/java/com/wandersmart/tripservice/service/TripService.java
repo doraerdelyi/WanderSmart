@@ -3,6 +3,7 @@ package com.wandersmart.tripservice.service;
 import com.wandersmart.tripservice.dto.*;
 import com.wandersmart.tripservice.exceptions.TripActivityNotFoundException;
 import com.wandersmart.tripservice.exceptions.TripNotFoundException;
+import com.wandersmart.tripservice.grpc.TripServiceGrpcClient;
 import com.wandersmart.tripservice.mappers.TripActivityMapper;
 import com.wandersmart.tripservice.mappers.TripMapper;
 import com.wandersmart.tripservice.model.Trip;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,14 +25,16 @@ public class TripService {
     private final TripActivityRepository tripActivityRepository;
     private final TripMapper tripMapper;
     private final TripActivityMapper tripActivityMapper;
+    private final TripServiceGrpcClient tripServiceGrpcClient;
 
 
 
-    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper) {
+    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper, TripServiceGrpcClient tripServiceGrpcClient) {
         this.tripRepository = tripRepository;
         this.tripActivityRepository = tripActivityRepository;
         this.tripMapper = tripMapper;
         this.tripActivityMapper = tripActivityMapper;
+        this.tripServiceGrpcClient = tripServiceGrpcClient;
     }
 
     public UUID createTrip(TripRequestDTO tripCreateDTO, UUID travellerId) {
@@ -43,7 +47,10 @@ public class TripService {
     @Transactional(readOnly=true)
     public TripDetailsResponseDTO getTripById(UUID tripId) {
         Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
-        return tripMapper.toDetailsResponseDTO(trip);
+        List<String> placeIds = trip.getPlaceIds();
+        Map<String, PlaceDTO> placesById = tripServiceGrpcClient.getPlaceById(placeIds);
+        List<TripActivityResponseDTO> tripActivityResponse = trip.getTripActivities().stream().map(activity -> tripActivityMapper.toDTO(activity, placesById.get(activity.getPlaceId()))).toList();
+        return new TripDetailsResponseDTO(trip.getTripId(), trip.getName(), trip.getStartDate(), trip.getEndDate(), tripActivityResponse);
     }
 
     @Transactional
