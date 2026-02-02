@@ -61,7 +61,11 @@ public class Trip {
     }
 
     public List<TripActivity> getTripActivities() {
-        return tripActivities;
+        return List.copyOf(tripActivities);
+    }
+
+    public List<String> getPlaceIds() {
+        return tripActivities.stream().map(TripActivity::getPlaceId).toList();
     }
 
     public LocalDate getStartDate() {

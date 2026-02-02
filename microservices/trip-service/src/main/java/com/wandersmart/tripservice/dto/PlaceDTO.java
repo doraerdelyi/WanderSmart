@@ -7,6 +7,7 @@ public record PlaceDTO(String placeId,
                        double rating,
                        int priceLevel,
                        List<String> openingHours,
+                       List<String> photos,
                        double latitude,
                        double longitude) {
 }
