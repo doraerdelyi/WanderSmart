@@ -48,10 +48,6 @@ public class TripActivity {
         return trip;
     }
 
-    public void setTripActivityId(UUID tripActivityId) {
-        this.tripActivityId = tripActivityId;
-    }
-
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
     }
