@@ -10,6 +10,7 @@ import com.wandersmart.tripservice.model.Trip;
 import com.wandersmart.tripservice.model.TripActivity;
 import com.wandersmart.tripservice.repository.TripActivityRepository;
 import com.wandersmart.tripservice.repository.TripRepository;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +27,17 @@ public class TripService {
     private final TripMapper tripMapper;
     private final TripActivityMapper tripActivityMapper;
     private final TripServiceGrpcClient tripServiceGrpcClient;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
 
 
-    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper, TripServiceGrpcClient tripServiceGrpcClient) {
+    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper, TripServiceGrpcClient tripServiceGrpcClient, KafkaTemplate<String, Object> kafkaTemplate) {
         this.tripRepository = tripRepository;
         this.tripActivityRepository = tripActivityRepository;
         this.tripMapper = tripMapper;
         this.tripActivityMapper = tripActivityMapper;
         this.tripServiceGrpcClient = tripServiceGrpcClient;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public UUID createTrip(TripRequestDTO tripCreateDTO, UUID travellerId) {
@@ -42,8 +45,12 @@ public class TripService {
                                 tripCreateDTO.startDate(),
                                 tripCreateDTO.endDate(),
                                 travellerId);
-        return this.tripRepository.save(newTrip).getTripId();
+        Trip savedTrip = tripRepository.save(newTrip);
+        TripResponseDTO tripResponseDTO = tripMapper.toResponseDTO(savedTrip);
+        kafkaTemplate.send("trip-created", tripResponseDTO);
+        return savedTrip.getTripId();
     }
+
     @Transactional(readOnly=true)
     public TripDetailsResponseDTO getTripById(UUID tripId) {
         Trip trip = this.tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
@@ -55,7 +62,7 @@ public class TripService {
 
     @Transactional
     public void deleteTripById(UUID tripId) {
-        this.tripActivityRepository.deleteAllByTripId(tripId);
+        this.tripActivityRepository.deleteAllByTrip_TripId(tripId);
         this.tripRepository.deleteByTripId(tripId);
     }
 
