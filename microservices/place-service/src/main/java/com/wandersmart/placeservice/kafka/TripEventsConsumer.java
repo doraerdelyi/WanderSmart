@@ -1,5 +1,7 @@
 package com.wandersmart.placeservice.kafka;
 
+import com.wandersmart.common.events.trip.TripCreatedEvent;
+import com.wandersmart.common.events.trip.TripDeletedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,7 +19,7 @@ public class TripEventsConsumer {
 
 
     @KafkaListener(topics="trip-deleted")
-    public void consumeTripDeletedEvent(TripResponseDTO deletedTrip) {
+    public void consumeTripDeletedEvent(TripDeletedEvent deletedTrip) {
         LOGGER.info("Trip deleted event received: {}", deletedTrip);
     }
 }
