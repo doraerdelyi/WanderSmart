@@ -50,8 +50,9 @@ public class TripService {
                                 tripCreateDTO.endDate(),
                                 travellerId);
         Trip savedTrip = tripRepository.save(newTrip);
-        TripCreatedEvent tripCreated = new TripCreatedEvent(savedTrip.getTripId(), travellerId, savedTrip.getName(), LocalDateTime.now());
-        kafkaTemplate.send("trip-created", tripCreated);
+        UUID savedTripId = savedTrip.getTripId();
+        TripCreatedEvent tripCreated = new TripCreatedEvent(savedTripId, travellerId, savedTrip.getName(), LocalDateTime.now());
+        kafkaTemplate.send("trip-created", savedTripId.toString(), tripCreated);
         return savedTrip.getTripId();
     }
 
@@ -69,8 +70,8 @@ public class TripService {
         Trip trip = tripRepository.findByTripId(tripId).orElseThrow(() -> new TripNotFoundException("Trip not found"));
         this.tripActivityRepository.deleteAllByTrip_TripId(tripId);
         this.tripRepository.deleteByTripId(tripId);
-        TripDeletedEvent deletedTrip = new TripDeletedEvent(tripId, LocalDate.now())
-        kafkaTemplate.send("trip-deleted", deletedTrip);
+        TripDeletedEvent deletedTrip = new TripDeletedEvent(tripId, LocalDateTime.now());
+        kafkaTemplate.send("trip-deleted", tripId.toString(), deletedTrip);
     }
 
     @Transactional
