@@ -88,14 +88,6 @@ public class Trip {
         this.tripId = tripId;
     }
 
-    public void setTripActivities(List<TripActivity> tripActivities) {
-        this.tripActivities = tripActivities;
-    }
-
-    public void setTravellerId(UUID travellerId) {
-        this.travellerId = travellerId;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
