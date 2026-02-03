@@ -6,6 +6,7 @@ import com.wandersmart.tripservice.dto.*;
 import com.wandersmart.tripservice.exceptions.TripActivityNotFoundException;
 import com.wandersmart.tripservice.exceptions.TripNotFoundException;
 import com.wandersmart.tripservice.grpc.TripServiceGrpcClient;
+import com.wandersmart.tripservice.kafka.TripEventsProducer;
 import com.wandersmart.tripservice.mappers.TripActivityMapper;
 import com.wandersmart.tripservice.mappers.TripMapper;
 import com.wandersmart.tripservice.model.Trip;
@@ -15,8 +16,6 @@ import com.wandersmart.tripservice.repository.TripRepository;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -31,17 +30,17 @@ public class TripService {
     private final TripMapper tripMapper;
     private final TripActivityMapper tripActivityMapper;
     private final TripServiceGrpcClient tripServiceGrpcClient;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final TripEventsProducer tripEventsProducer;
 
 
 
-    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper, TripServiceGrpcClient tripServiceGrpcClient, KafkaTemplate<String, Object> kafkaTemplate) {
+    public TripService(TripRepository tripRepository, TripActivityRepository tripActivityRepository, TripMapper tripMapper, TripActivityMapper tripActivityMapper, TripServiceGrpcClient tripServiceGrpcClient, TripEventsProducer tripEventsProducer) {
         this.tripRepository = tripRepository;
         this.tripActivityRepository = tripActivityRepository;
         this.tripMapper = tripMapper;
         this.tripActivityMapper = tripActivityMapper;
         this.tripServiceGrpcClient = tripServiceGrpcClient;
-        this.kafkaTemplate = kafkaTemplate;
+        this.tripEventsProducer = tripEventsProducer;
     }
 
     public UUID createTrip(TripRequestDTO tripCreateDTO, UUID travellerId) {
@@ -52,7 +51,7 @@ public class TripService {
         Trip savedTrip = tripRepository.save(newTrip);
         UUID savedTripId = savedTrip.getTripId();
         TripCreatedEvent tripCreated = new TripCreatedEvent(savedTripId, travellerId, savedTrip.getName(), LocalDateTime.now());
-        kafkaTemplate.send("trip-created", savedTripId.toString(), tripCreated);
+        tripEventsProducer.publishTripCreated(tripCreated);
         return savedTrip.getTripId();
     }
 
@@ -71,7 +70,7 @@ public class TripService {
         this.tripActivityRepository.deleteAllByTrip_TripId(tripId);
         this.tripRepository.deleteByTripId(tripId);
         TripDeletedEvent deletedTrip = new TripDeletedEvent(tripId, LocalDateTime.now());
-        kafkaTemplate.send("trip-deleted", tripId.toString(), deletedTrip);
+        tripEventsProducer.publishTripDeleted(deletedTrip);
     }
 
     @Transactional
