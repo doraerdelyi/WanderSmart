@@ -4,11 +4,24 @@ server:
 spring:
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 3s
       routes:
         - id: trip-service
           uri: http://localhost:8081
           predicates:
             - Path=/api/trips/**
+          filters:
+            - name: CircuitBreaker
+            - args:
+              name: tripServiceCircuitBreaker
+              fallbackUri: forward:/fallback
+            - name: Retry
+              args:
+                retries: 2
+                methods: GET
+                statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE
         - id: place-service
           uri: http://localhost:8082
           predicates:
@@ -37,3 +50,13 @@ spring:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      tripServiceCircuitBreaker:
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        slidingWindowSize: 10
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
